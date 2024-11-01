@@ -8,17 +8,19 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { add_Todo } from "../management/action";
+import { add_Todo, getDataApi, getPageList } from "../management/action";
+import { todoAdd, todoDelete } from "../ReduxToolkit/TodosSlice";
 import { isTemplateExpression } from "typescript";
 
 const Home = () => {
   const [task, setTask] = useState("");
-  const todoList = useSelector((state) => state.todos);
+  const todoList = useSelector((state) => state.todo);
+  const userList = useSelector((state) => state.userData);
   const dispatch = useDispatch();
   console.log(todoList);
 
   function handlePress() {
-    dispatch(add_Todo(task));
+    dispatch(todoAdd({ text: task }));
     setTask("");
   }
   return (
@@ -32,6 +34,7 @@ const Home = () => {
         }}
       />
       <Button title="Add List" onPress={() => handlePress()} />
+      <Button title="Make API Call" onPress={() => dispatch(getPageList())} />
       <View
         style={{
           flex: 0.5,
@@ -57,7 +60,7 @@ const Home = () => {
                   borderRadius: 5,
                 }}
               >
-                <Text style={{ color: "white" }}>{item.task}</Text>
+                <Text style={{ color: "white" }}>{item.text}</Text>
               </View>
             )}
           />

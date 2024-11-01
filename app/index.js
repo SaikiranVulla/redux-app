@@ -1,16 +1,19 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Home from "./Home";
-import { store, persistor } from "../management/store";
+import PostList from "./PostList";
+import PostAdd from "./PostAdd";
+import UserList from "./UserList";
+import { store } from "../ReduxToolkit/Store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 const index = () => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <Home />
-      </PersistGate>
+      {/* <UserList /> */}
+      <PostAdd />
+      <PostList />
     </Provider>
   );
 };
