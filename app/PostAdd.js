@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addPosts } from "../ReduxToolkit/PostSlice";
+import { addPosts, addFetchPosts } from "../ReduxToolkit/PostSlice";
 import { nanoid } from "@reduxjs/toolkit";
 import UserList from "./UserList";
 
@@ -12,7 +12,13 @@ const PostAdd = () => {
   const [authorName, setAuthorName] = useState("");
 
   function onSubmit() {
-    dispatch(addPosts(postTitle, postContent, authorName));
+    dispatch(
+      addFetchPosts({
+        title: postTitle,
+        body: postContent,
+        authorName: authorName,
+      })
+    );
     setAuthorName("");
     setPostTitle("");
     setPostContent("");

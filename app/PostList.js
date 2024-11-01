@@ -1,42 +1,61 @@
 import { FlatList, StyleSheet, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TimeAgo from "./TimeAgo";
 import ReactionButton from "./ReactionButton";
 import { Card, Text } from "react-native-paper";
+import {
+  fetchPosts,
+  getAllPosts,
+  getPostStatus,
+  getPostError,
+} from "../ReduxToolkit/PostSlice";
 
 const PostList = () => {
-  const posts = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
+  const posts = useSelector(getAllPosts);
+  const postsStatus = useSelector(getPostStatus);
+  const postsError = useSelector(getPostError);
+
+  useEffect(() => {
+    if (postsStatus == "idle") {
+      dispatch(fetchPosts());
+    }
+  }, [postsStatus, postsError]);
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Card
-            style={{ marginBottom: 10 }}
-            contentStyle={{ padding: 5 }}
-            elevation={5}
-          >
-            <Card.Title title={item.title} />
-            <Card.Content>
-              <Text variant="bodyMedium">{item.content}</Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text variant="bodyMedium">{`${
-                  item.authorName ? item.authorName : "by unKnown"
-                }`}</Text>
-                <TimeAgo timeStramp={item.date} />
-              </View>
-              <ReactionButton posts={item} />
-            </Card.Content>
-          </Card>
-        )}
-      />
+      {postsStatus == "succeeded" && (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Card
+              style={{ marginBottom: 10 }}
+              contentStyle={{ padding: 5 }}
+              elevation={5}
+            >
+              <Card.Title title={item.title} />
+              <Card.Content>
+                <Text variant="bodyMedium">{item.body}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text variant="bodyMedium">{`${
+                    item.authorName ? item.authorName : "by unKnown"
+                  }`}</Text>
+                  <TimeAgo timeStramp={item.date} />
+                </View>
+                <ReactionButton posts={item} />
+              </Card.Content>
+            </Card>
+          )}
+        />
+      )}
+      {postsStatus === "loading" && <Text>Loading....</Text>}
     </View>
   );
 };

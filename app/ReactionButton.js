@@ -12,12 +12,12 @@ const reactions = {
 };
 
 const ReactionButton = ({ posts }) => {
-  console.log(posts, "Reactions");
   const dispatch = useDispatch();
 
   const ButtonReaction = Object.entries(reactions).map(([name, emoji]) => {
     return (
       <TouchableOpacity
+        key={emoji}
         activeOpacity={0.7}
         onPress={() => {
           dispatch(reactionsAdded({ postId: posts.id, reaction: name }));
